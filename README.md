@@ -4,8 +4,9 @@ Add subscriptions to MailChimp lists.
 
 ## Usage
 
-- install module
-- fill in module settings
+1. install module
+2. fill in module settings
+
 - **MailChimp api key**
   - Click on your account name and select **Profile**. Then select **Extras**, a dropdown will appear, choose **API keys**. Here you\'ll find your API keys listed below, if there isn\'t one, click **Create A Key**.
 - **Mailchimp list ID for new subscribers**
@@ -18,6 +19,8 @@ Add subscriptions to MailChimp lists.
   - Select firstname field (choose from existing ones) which should be attached to the form. Optional: leave this field blank to skip firstname.
 - **Select lastname field**
   - Select lastname field (choose from existing ones) which should be attached to the form. Optional: leave this field blank to skip lastname. 
+  
+3. call module
 
 ```php
 echo $modules->get('MailChimp')->render();
@@ -34,7 +37,24 @@ Have a look at your log files (ProcessWire Admin > Setup > Logs).
 Hookable method called before the form is rendered.  
 Adds possibility to add custom fields.
 
-*@param InputfieldForm $form*
+* `@param InputfieldForm $form`
+
+Example:
+
+```php
+$this->addHookAfter('MailChimp::addFields', $this, 'hookAddFields');
+
+public function hookAddFields(HookEvent $event) {
+  $form = $event->arguments(0);
+  if (!$form->get('interests')) {
+    $select = $this->modules->get('InputfieldSelect');
+    $select->name = 'interests';
+    $select->addOption('A', $this->_('Option A'));
+    $select->addOption('B', $this->_('Option B'));
+    $form->append($select);
+  }
+}
+```
 
 ### Modify data
 
